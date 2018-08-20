@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
-
+import { distinctUntilChanged } from 'rxjs/operator/distinctUntilChanged';
+import { debounceTime } from 'rxjs/operator/debounceTime';
+import { skip } from 'rxjs/operator/skip';
 import { DefaultFilter } from './default-filter';
 
 @Component({
@@ -28,11 +29,9 @@ export class InputFilterComponent extends DefaultFilter implements OnInit {
       this.inputControl.setValue(this.query);
     }
     this.inputControl.valueChanges
-      .pipe(
-        skip(1),
-        distinctUntilChanged(),
-        debounceTime(this.delay),
-      )
+      .skip(1)
+      .distinctUntilChanged()
+      .debounceTime(this.delay)
       .subscribe((value: string) => {
         this.query = this.inputControl.value;
         this.setFilter();

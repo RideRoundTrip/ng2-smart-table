@@ -7,6 +7,7 @@ export class ServerSourceConf {
   protected static readonly FILTER_FIELD_KEY = '#field#_like';
   protected static readonly TOTAL_KEY = 'x-total-count';
   protected static readonly DATA_KEY = '';
+  protected static readonly FORMAT_DATA_FUNCTION = undefined;
 
   endPoint: string;
 
@@ -17,10 +18,12 @@ export class ServerSourceConf {
   filterFieldKey: string;
   totalKey: string;
   dataKey: string;
+  formatDataFunction: any;
 
   constructor(
     { endPoint = '', sortFieldKey = '', sortDirKey = '',
-      pagerPageKey = '', pagerLimitKey = '', filterFieldKey = '', totalKey = '', dataKey = '' } = {}) {
+      pagerPageKey = '', pagerLimitKey = '', filterFieldKey = '', totalKey = '',
+      dataKey = '', formatDataFunction = '' } = {}) {
 
     this.endPoint = endPoint ? endPoint : '';
 
@@ -31,5 +34,6 @@ export class ServerSourceConf {
     this.filterFieldKey = filterFieldKey ? filterFieldKey : ServerSourceConf.FILTER_FIELD_KEY;
     this.totalKey = totalKey ? totalKey : ServerSourceConf.TOTAL_KEY;
     this.dataKey = dataKey ? dataKey : ServerSourceConf.DATA_KEY;
+    this.formatDataFunction = formatDataFunction ? formatDataFunction : ServerSourceConf.FORMAT_DATA_FUNCTION;
   }
 }

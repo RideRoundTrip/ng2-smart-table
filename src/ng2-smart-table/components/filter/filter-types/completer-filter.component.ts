@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { CompleterService } from 'ng2-completer';
 
 import { DefaultFilter } from './default-filter';
-import { distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operator/distinctUntilChanged';
+import { debounceTime } from 'rxjs/operator/debounceTime';
+import { skip } from 'rxjs/operator/skip';
 
 @Component({
   selector: 'completer-filter',
@@ -32,11 +34,9 @@ export class CompleterFilterComponent extends DefaultFilter implements OnInit {
     config.dataService.descriptionField(config.descriptionField);
 
     this.changesSubscription = this.completerContent
-      .pipe(
-        map((ev: any) => (ev && ev.title) || ev || ''),
-        distinctUntilChanged(),
-        debounceTime(this.delay)
-      )
+      .map((ev: any) => (ev && ev.title) || ev || '')
+      .distinctUntilChanged()
+      .debounceTime(this.delay)
       .subscribe((search: string) => {
         this.query = search;
         this.setFilter();

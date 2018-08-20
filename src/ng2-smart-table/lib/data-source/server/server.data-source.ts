@@ -1,11 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
+import { Observable } from 'rxjs/Observable';
 import { LocalDataSource } from '../local/local.data-source';
 import { ServerSourceConf } from './server-source.conf';
 import { getDeepFromObject } from '../../helpers';
-
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs/operator/map';
+import 'rxjs/operator/toPromise';
 
 export class ServerDataSource extends LocalDataSource {
 
@@ -28,13 +27,25 @@ export class ServerDataSource extends LocalDataSource {
   }
 
   getElements(): Promise<any> {
+    console.log("getElements");
     return this.requestElements()
-      .pipe(map(res => {
+      .map(res => {
         this.lastRequestCount = this.extractTotalFromResponse(res);
         this.data = this.extractDataFromResponse(res);
 
         return this.data;
-      })).toPromise();
+      }).toPromise();
+    // return this.requestElements()
+    //   .map(res => {
+    //     const data = res.data;
+    //     this.lastRequestCount = this.extractTotalFromResponse(res.meta);
+    //     this.data = this.extractDataFromResponse(data);
+    //
+    //     if (this.conf.formatDataFunction) {
+    //       this.conf.formatDataFunction(data);
+    //     }
+    //     return this.data;
+    //   }).toPromise();
   }
 
   /**
@@ -43,7 +54,7 @@ export class ServerDataSource extends LocalDataSource {
    * @returns {any}
    */
   protected extractDataFromResponse(res: any): Array<any> {
-    const rawData = res.body;
+    const rawData = res;
     const data = !!this.conf.dataKey ? getDeepFromObject(rawData, this.conf.dataKey, []) : rawData;
 
     if (data instanceof Array) {
@@ -61,17 +72,12 @@ export class ServerDataSource extends LocalDataSource {
    * @returns {any}
    */
   protected extractTotalFromResponse(res: any): number {
-    if (res.headers.has(this.conf.totalKey)) {
-      return +res.headers.get(this.conf.totalKey);
-    } else {
-      const rawData = res.body;
-      return getDeepFromObject(rawData, this.conf.totalKey, 0);
-    }
+    return res[this.conf.totalKey];
   }
 
   protected requestElements(): Observable<any> {
     let httpParams = this.createRequesParams();
-    return this.http.get(this.conf.endPoint, { params: httpParams, observe: 'response' });
+    return this.http.get(this.conf.endPoint, { params: httpParams });
   }
 
   protected createRequesParams(): HttpParams {
