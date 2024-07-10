@@ -5,6 +5,15 @@ This is a fork of ng2-smart-table component made by [Akveo team](http://akveo.co
 ## ⚠ Low Maintenance
 Due to project priority and resource constraints, this project is currently on low maintenance. We recognize that there are a lot of activities around this package. However, we are unable to accommodate the maintenance this project requires.
 
+## How to release a new version
+In order to release a new version of this package to the registry, follow these steps:
+1. Login by running `npm login` in the terminal. Use the credentials in 1Password vault for the npm registry.
+2. Change the version number to a new unused version in `package.json` and `package-lock.json`.
+3. Ensure the angular cli is installed by running `npm install -g @angular/cli`.  
+4. Run `npm run build:lib`
+5. cd into projects/ng2-smart-table
+6. Run `npm publish --access=public`
+
 ## Installation
 
 The library is available as npm package, so all you need to do is to run the following command:
